@@ -72,7 +72,7 @@ $converter = new \TypeLang\ReflectionConverter\Converter();
 // Dump all constants with its types.
 foreach ($class->getReflectionConstants() as $constant) {
     // Creates type node AST from a constant's type.
-    if ($type = $converter->convertConstantType($constant)); {
+    if ($type = $converter->convertConstantType($constant)) {
         echo 'const ' . $constant->name . ' has type ' . $printer->print($type) . "\n";
     }
 }
@@ -80,7 +80,7 @@ foreach ($class->getReflectionConstants() as $constant) {
 // Dump all properties with its types.
 foreach ($class->getProperties() as $property) {
     // Creates type node AST from a property's type.
-    if ($type = $converter->convertPropertyType($property)); {
+    if ($type = $converter->convertPropertyType($property)) {
         echo 'property ' . $property->name . ' has type ' . $printer->print($type) . "\n";
     }
 }
@@ -88,13 +88,13 @@ foreach ($class->getProperties() as $property) {
 // Dump all methods with its types.
 foreach ($class->getMethods() as $method) {
     // Creates type node AST from any function's return type.
-    if ($type = $converter->convertFunctionType($method)); {
+    if ($type = $converter->convertFunctionType($method)) {
         echo 'function ' . $method->name . ' has type ' . $printer->print($type) . "\n";
     }
     
     // Creates type node AST from a parameter's type.
     foreach ($method->getParameters() as $parameter) {
-        if ($type = $converter->convertParameterType($parameter)); {
+        if ($type = $converter->convertParameterType($parameter)) {
             echo 'parameter ' . $parameter->name . ' has type ' . $printer->print($type) . "\n";
         }
     }
