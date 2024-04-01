@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\ReflectionConverter;
+namespace TypeLang\Reader;
 
 use TypeLang\Parser\Node\FullQualifiedName;
 use TypeLang\Parser\Node\Identifier;
@@ -12,65 +12,12 @@ use TypeLang\Parser\Node\Stmt\NamedTypeNode;
 use TypeLang\Parser\Node\Stmt\NullableTypeNode;
 use TypeLang\Parser\Node\Stmt\TypeStatement;
 use TypeLang\Parser\Node\Stmt\UnionTypeNode;
-use TypeLang\ReflectionConverter\Exception\ConverterExceptionInterface;
-use TypeLang\ReflectionConverter\Exception\UnrecognizedReflectionTypeException;
+use TypeLang\Reader\Exception\ReaderExceptionInterface;
+use TypeLang\Reader\Exception\UnrecognizedReflectionTypeException;
 
-final class Converter implements ConverterInterface
+final class ReflectionReader implements ReaderInterface
 {
-    /**
-     * @api
-     *
-     * @throws ConverterExceptionInterface
-     */
-    public function convertPropertyType(\ReflectionProperty $property): ?TypeStatement
-    {
-        $type = $property->getType();
-
-        if ($type instanceof \ReflectionType) {
-            return $this->convert($type);
-        }
-
-        return null;
-    }
-
-    /**
-     * @api
-     *
-     * @throws ConverterExceptionInterface
-     */
-    public function convertFunctionType(\ReflectionFunctionAbstract $function): ?TypeStatement
-    {
-        $type = $function->getReturnType();
-
-        if ($type instanceof \ReflectionType) {
-            return $this->convert($type);
-        }
-
-        return null;
-    }
-
-    /**
-     * @api
-     *
-     * @throws ConverterExceptionInterface
-     */
-    public function convertParameterType(\ReflectionParameter $parameter): ?TypeStatement
-    {
-        $type = $parameter->getType();
-
-        if ($type instanceof \ReflectionType) {
-            return $this->convert($type);
-        }
-
-        return null;
-    }
-
-    /**
-     * @api
-     *
-     * @throws ConverterExceptionInterface
-     */
-    public function convertConstantType(\ReflectionClassConstant $constant): ?TypeStatement
+    public function findConstantType(\ReflectionClassConstant $constant): ?TypeStatement
     {
         if (\PHP_VERSION_ID < 80300) {
             return null;
@@ -80,13 +27,67 @@ final class Converter implements ConverterInterface
         $type = $constant->getType();
 
         if ($type instanceof \ReflectionType) {
-            return $this->convert($type);
+            try {
+                return $this->getType($type);
+            } catch (UnrecognizedReflectionTypeException) {
+                throw UnrecognizedReflectionTypeException::fromReflectionConstant($type, $constant);
+            }
         }
 
         return null;
     }
 
-    public function convert(\ReflectionType $type): TypeStatement
+    public function findPropertyType(\ReflectionProperty $property): ?TypeStatement
+    {
+        $type = $property->getType();
+
+        if ($type instanceof \ReflectionType) {
+            try {
+                return $this->getType($type);
+            } catch (UnrecognizedReflectionTypeException) {
+                throw UnrecognizedReflectionTypeException::fromReflectionProperty($type, $property);
+            }
+        }
+
+        return null;
+    }
+
+    public function findFunctionType(\ReflectionFunctionAbstract $function): ?TypeStatement
+    {
+        $type = $function->getReturnType();
+
+        if ($type instanceof \ReflectionType) {
+            try {
+                return $this->getType($type);
+            } catch (UnrecognizedReflectionTypeException) {
+                throw UnrecognizedReflectionTypeException::fromReflectionFunction($type, $function);
+            }
+        }
+
+        return null;
+    }
+
+    public function findParameterType(\ReflectionParameter $parameter): ?TypeStatement
+    {
+        $type = $parameter->getType();
+
+        if ($type instanceof \ReflectionType) {
+            try {
+                return $this->getType($type);
+            } catch (UnrecognizedReflectionTypeException) {
+                throw UnrecognizedReflectionTypeException::fromReflectionParameter($type, $parameter);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws ReaderExceptionInterface
+     * @throws UnrecognizedReflectionTypeException
+     * @api
+     */
+    public function getType(\ReflectionType $type): TypeStatement
     {
         return match (true) {
             $type instanceof \ReflectionUnionType => $this->convertUnionType($type),
@@ -119,28 +120,28 @@ final class Converter implements ConverterInterface
     }
 
     /**
-     * @throws ConverterExceptionInterface
+     * @throws ReaderExceptionInterface
      */
     private function convertUnionType(\ReflectionUnionType $type): UnionTypeNode
     {
         $children = [];
 
         foreach ($type->getTypes() as $child) {
-            $children[] = $this->convert($child);
+            $children[] = $this->getType($child);
         }
 
         return new UnionTypeNode(...$children);
     }
 
     /**
-     * @throws ConverterExceptionInterface
+     * @throws ReaderExceptionInterface
      */
     private function convertIntersectionType(\ReflectionIntersectionType $type): IntersectionTypeNode
     {
         $children = [];
 
         foreach ($type->getTypes() as $child) {
-            $children[] = $this->convert($child);
+            $children[] = $this->getType($child);
         }
 
         return new IntersectionTypeNode(...$children);

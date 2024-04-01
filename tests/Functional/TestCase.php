@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\ReflectionConverter\Tests\Functional;
+namespace TypeLang\Reader\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Group;
-use TypeLang\ReflectionConverter\Tests\TestCase as BaseTestCase;
+use TypeLang\Reader\Tests\TestCase as BaseTestCase;
 
-#[Group('functional'), Group('type-lang/reflection-converter')]
+#[Group('functional'), Group('type-lang/reader')]
 abstract class TestCase extends BaseTestCase {}

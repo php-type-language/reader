@@ -1,12 +1,12 @@
 {
-    "name": "type-lang/reflection-converter",
+    "name": "type-lang/reader",
     "type": "library",
     "description": "PHP Type Language reflection converter",
     "keywords": ["converter", "language", "php", "parser", "reflection"],
     "license": "MIT",
     "support": {
-        "source": "https://github.com/php-type-language/reflection-converter",
-        "issues": "https://github.com/php-type-language/reflection-converter/issues"
+        "source": "https://github.com/php-type-language/reader",
+        "issues": "https://github.com/php-type-language/reader/issues"
     },
     "require": {
         "php": "^8.1",
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "TypeLang\\ReflectionConverter\\": "src"
+            "TypeLang\\Reader\\": "src"
         }
     },
     "require-dev": {
@@ -27,7 +27,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "TypeLang\\ReflectionConverter\\Tests\\": "tests"
+            "TypeLang\\Reader\\Tests\\": "tests"
         }
     },
     "extra": {

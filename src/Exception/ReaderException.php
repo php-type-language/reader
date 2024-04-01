@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\ReflectionConverter\Exception;
+namespace TypeLang\Reader\Exception;
 
 /**
  * @psalm-consistent-constructor
  */
-class ConverterException extends \LogicException implements ConverterExceptionInterface
+class ReaderException extends \LogicException implements ReaderExceptionInterface
 {
     final public const ERROR_CODE_INTERNAL_ERROR = 0x01;
 
@@ -20,7 +20,7 @@ class ConverterException extends \LogicException implements ConverterExceptionIn
 
     public static function fromInternalError(\Throwable $e): static
     {
-        $message = 'An internal error occurred while converting reflection type';
+        $message = 'An internal error occurred while reading reflection type';
 
         return new static($message, self::ERROR_CODE_INTERNAL_ERROR, $e);
     }
