@@ -1,7 +1,7 @@
 {
     "name": "type-lang/reader",
     "type": "library",
-    "description": "PHP Type Language reflection converter",
+    "description": "Library for reading TypeLang AST nodes from types exposed by PHP Reflection objects",
     "keywords": ["converter", "language", "php", "parser", "reflection"],
     "license": "MIT",
     "support": {

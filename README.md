@@ -14,14 +14,14 @@
     <a href="https://github.com/php-type-language/reader/actions"><img src="https://github.com/php-type-language/reader/workflows/tests/badge.svg"></a>
 </p>
 
-Provides a set of methods for converting PHP reflection objects into the 
-Type Language AST nodes.
+Provides a set of methods for converting PHP Reflection objects into the
+TypeLang AST Nodes.
 
 Read [documentation pages](https://phpdoc.io) for more information.
 
 ## Installation
 
-Type Language Reflection Converter is available as Composer repository and can 
+TypeLang Reader is available as Composer repository and can 
 be installed using the following command in a root of your project:
 
 ```sh
