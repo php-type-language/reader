@@ -17,7 +17,7 @@
 Provides a set of methods for converting PHP Reflection objects into the
 TypeLang AST Nodes.
 
-Read [documentation pages](https://phpdoc.io) for more information.
+Read [documentation pages](https://typelang.dev) for more information.
 
 ## Installation
 
