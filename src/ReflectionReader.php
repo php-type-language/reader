@@ -110,7 +110,10 @@ final class ReflectionReader implements ReaderInterface
 
     private function convertNonNullNamedType(\ReflectionNamedType $type): TypeStatement
     {
-        $identifier = new Identifier($type->getName());
+        /** @var non-empty-string $name */
+        $name = $type->getName();
+
+        $identifier = new Identifier($name);
 
         if ($type->isBuiltin() || $identifier->isSpecial() || $identifier->isBuiltin()) {
             return new NamedTypeNode(new Name($identifier));
@@ -121,6 +124,7 @@ final class ReflectionReader implements ReaderInterface
 
     /**
      * @throws ReaderExceptionInterface
+     * @return UnionTypeNode<TypeStatement>
      */
     private function convertUnionType(\ReflectionUnionType $type): UnionTypeNode
     {
@@ -135,6 +139,7 @@ final class ReflectionReader implements ReaderInterface
 
     /**
      * @throws ReaderExceptionInterface
+     * @return IntersectionTypeNode<TypeStatement>
      */
     private function convertIntersectionType(\ReflectionIntersectionType $type): IntersectionTypeNode
     {
