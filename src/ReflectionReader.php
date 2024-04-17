@@ -110,16 +110,16 @@ final class ReflectionReader implements ReaderInterface
 
     private function convertNonNullNamedType(\ReflectionNamedType $type): TypeStatement
     {
-        /** @var non-empty-string $name */
-        $name = $type->getName();
+        /** @var non-empty-string $literal */
+        $literal = $type->getName();
 
-        $identifier = new Identifier($name);
+        $name = new Name($literal);
 
-        if ($type->isBuiltin() || $identifier->isSpecial() || $identifier->isBuiltin()) {
-            return new NamedTypeNode(new Name($identifier));
+        if ($type->isBuiltin() || $name->isSpecial() || $name->isBuiltin()) {
+            return new NamedTypeNode($name);
         }
 
-        return new NamedTypeNode(new FullQualifiedName($identifier));
+        return new NamedTypeNode(new FullQualifiedName($name));
     }
 
     /**
