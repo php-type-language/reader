@@ -12,7 +12,7 @@ interface ParameterReaderInterface
     /**
      * Returns a type AST structure based on an {@see ReflectionParameter} object.
      *
-     * @throws ReaderExceptionInterface In case of any reading error occurs.
+     * @throws ReaderExceptionInterface in case of any reading error occurs
      */
     public function findParameterType(\ReflectionParameter $parameter): ?TypeStatement;
 }

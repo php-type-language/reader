@@ -12,7 +12,7 @@ interface ConstantReaderInterface
     /**
      * Returns a type AST structure based on an {@see ReflectionClassConstant} object.
      *
-     * @throws ReaderExceptionInterface In case of any reading error occurs.
+     * @throws ReaderExceptionInterface in case of any reading error occurs
      */
     public function findConstantType(\ReflectionClassConstant $constant): ?TypeStatement;
 }

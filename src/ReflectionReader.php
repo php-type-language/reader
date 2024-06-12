@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TypeLang\Reader;
 
 use TypeLang\Parser\Node\FullQualifiedName;
-use TypeLang\Parser\Node\Identifier;
 use TypeLang\Parser\Node\Name;
 use TypeLang\Parser\Node\Stmt\IntersectionTypeNode;
 use TypeLang\Parser\Node\Stmt\NamedTypeNode;
@@ -123,8 +122,8 @@ final class ReflectionReader implements ReaderInterface
     }
 
     /**
-     * @throws ReaderExceptionInterface
      * @return UnionTypeNode<TypeStatement>
+     * @throws ReaderExceptionInterface
      */
     private function convertUnionType(\ReflectionUnionType $type): UnionTypeNode
     {
@@ -138,8 +137,8 @@ final class ReflectionReader implements ReaderInterface
     }
 
     /**
-     * @throws ReaderExceptionInterface
      * @return IntersectionTypeNode<TypeStatement>
+     * @throws ReaderExceptionInterface
      */
     private function convertIntersectionType(\ReflectionIntersectionType $type): IntersectionTypeNode
     {

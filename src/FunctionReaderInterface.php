@@ -12,7 +12,7 @@ interface FunctionReaderInterface
     /**
      * Returns a type AST structure based on an {@see ReflectionFunctionAbstract} object.
      *
-     * @throws ReaderExceptionInterface In case of any reading error occurs.
+     * @throws ReaderExceptionInterface in case of any reading error occurs
      */
     public function findFunctionType(\ReflectionFunctionAbstract $function): ?TypeStatement;
 }
