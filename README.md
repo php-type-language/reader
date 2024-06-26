@@ -25,7 +25,7 @@ TypeLang Reader is available as Composer repository and can
 be installed using the following command in a root of your project:
 
 ```sh
-$ composer require type-lang/reader
+composer require type-lang/reader
 ```
 
 ## Quick Start
