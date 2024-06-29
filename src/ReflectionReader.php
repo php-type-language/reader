@@ -24,6 +24,7 @@ final class ReflectionReader implements ReaderInterface
 
         /**
          * @var \ReflectionType|null $type
+         *
          * @phpstan-ignore-next-line : This method available since PHP 8.3
          */
         $type = $constant->getType();
