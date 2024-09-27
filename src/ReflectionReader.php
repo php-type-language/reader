@@ -86,10 +86,10 @@ final class ReflectionReader implements ReaderInterface
     }
 
     /**
-     * @throws ReaderExceptionInterface
-     * @throws UnrecognizedReflectionTypeException
      * @api
      *
+     * @throws ReaderExceptionInterface
+     * @throws UnrecognizedReflectionTypeException
      */
     public function getType(\ReflectionType $type): TypeStatement
     {

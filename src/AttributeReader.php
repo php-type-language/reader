@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader;
 
-use TypeLang\Parser\Parser;
 use TypeLang\Parser\Node\Stmt\TypeStatement;
+use TypeLang\Parser\Parser;
 use TypeLang\Parser\ParserInterface;
 use TypeLang\Reader\AttributeReader\AttributeProviderInterface;
 use TypeLang\Reader\AttributeReader\DefaultAttributeProvider;
@@ -24,6 +24,7 @@ final class AttributeReader implements ReaderInterface
 
     /**
      * @param \ReflectionProperty|\ReflectionParameter|\ReflectionFunctionAbstract|\ReflectionClassConstant $reflector
+     *
      * @throws TypeReadingException
      */
     private function tryRead(\Reflector $reflector): ?TypeStatement
