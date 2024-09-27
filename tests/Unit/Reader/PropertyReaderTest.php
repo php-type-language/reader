@@ -26,7 +26,7 @@ class PropertyReaderTest extends ReaderTestCase
             property: new \ReflectionProperty(PropertyReaderStub::class, 'singleType'),
         );
 
-        self::assertEquals(new NamedTypeNode(
+        self::assertSameType(new NamedTypeNode(
             name: new Identifier('int'),
         ), $type);
     }
@@ -38,7 +38,7 @@ class PropertyReaderTest extends ReaderTestCase
             property: new \ReflectionProperty(PropertyReaderStub::class, 'unionType'),
         );
 
-        self::assertEquals(new UnionTypeNode(
+        self::assertSameType(new UnionTypeNode(
             a: new NamedTypeNode('string'),
             b: new NamedTypeNode('int'),
         ), $type);
@@ -51,7 +51,7 @@ class PropertyReaderTest extends ReaderTestCase
             property: new \ReflectionProperty(PropertyReaderStub::class, 'intersectionType'),
         );
 
-        self::assertEquals(new IntersectionTypeNode(
+        self::assertSameType(new IntersectionTypeNode(
             a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
             b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
         ), $type);
@@ -65,7 +65,7 @@ class PropertyReaderTest extends ReaderTestCase
             property: new \ReflectionProperty(PropertyReaderStubPHP82::class, 'compositeType'),
         );
 
-        self::assertEquals(new UnionTypeNode(
+        self::assertSameType(new UnionTypeNode(
             a: new IntersectionTypeNode(
                 a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
                 b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),

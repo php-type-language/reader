@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader\Exception;
 
-class UnrecognizedReflectionTypeException extends ReaderException
+class UnrecognizedReflectionTypeException extends TypeReadingException
 {
     final public const ERROR_CODE_INVALID_TYPE = 0x01 + parent::CODE_LAST;
 

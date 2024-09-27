@@ -26,7 +26,7 @@ class FunctionReaderTest extends ReaderTestCase
             function: new \ReflectionFunction('TypeLang\Reader\Tests\Unit\Reader\Stub\get_single_type'),
         );
 
-        self::assertEquals(new NamedTypeNode(
+        self::assertSameType(new NamedTypeNode(
             name: new Identifier('int'),
         ), $type);
     }
@@ -40,7 +40,7 @@ class FunctionReaderTest extends ReaderTestCase
             function: new \ReflectionFunction('TypeLang\Reader\Tests\Unit\Reader\Stub\get_union_type'),
         );
 
-        self::assertEquals(new UnionTypeNode(
+        self::assertSameType(new UnionTypeNode(
             a: new NamedTypeNode('string'),
             b: new NamedTypeNode('int'),
         ), $type);
@@ -55,7 +55,7 @@ class FunctionReaderTest extends ReaderTestCase
             function: new \ReflectionFunction('TypeLang\Reader\Tests\Unit\Reader\Stub\get_intersection_type'),
         );
 
-        self::assertEquals(new IntersectionTypeNode(
+        self::assertSameType(new IntersectionTypeNode(
             a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
             b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
         ), $type);
@@ -71,7 +71,7 @@ class FunctionReaderTest extends ReaderTestCase
             function: new \ReflectionFunction('TypeLang\Reader\Tests\Unit\Reader\Stub\get_composite_type'),
         );
 
-        self::assertEquals(new UnionTypeNode(
+        self::assertSameType(new UnionTypeNode(
             a: new IntersectionTypeNode(
                 a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
                 b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),

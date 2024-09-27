@@ -26,7 +26,7 @@ class MethodReaderTest extends ReaderTestCase
             function: new \ReflectionMethod(MethodReaderStub::class, 'getSingleType'),
         );
 
-        self::assertEquals(new NamedTypeNode(
+        self::assertSameType(new NamedTypeNode(
             name: new Identifier('int'),
         ), $type);
     }
@@ -38,7 +38,7 @@ class MethodReaderTest extends ReaderTestCase
             function: new \ReflectionMethod(MethodReaderStub::class, 'getUnionType'),
         );
 
-        self::assertEquals(new UnionTypeNode(
+        self::assertSameType(new UnionTypeNode(
             a: new NamedTypeNode('string'),
             b: new NamedTypeNode('int'),
         ), $type);
@@ -51,7 +51,7 @@ class MethodReaderTest extends ReaderTestCase
             function: new \ReflectionMethod(MethodReaderStub::class, 'getIntersectionType'),
         );
 
-        self::assertEquals(new IntersectionTypeNode(
+        self::assertSameType(new IntersectionTypeNode(
             a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
             b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
         ), $type);
@@ -65,7 +65,7 @@ class MethodReaderTest extends ReaderTestCase
             function: new \ReflectionMethod(MethodReaderStubPHP82::class, 'getCompositeType'),
         );
 
-        self::assertEquals(new UnionTypeNode(
+        self::assertSameType(new UnionTypeNode(
             a: new IntersectionTypeNode(
                 a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
                 b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
