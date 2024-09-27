@@ -11,7 +11,7 @@ use TypeLang\Reader\AttributeReader\AttributeProviderInterface;
 use TypeLang\Reader\AttributeReader\DefaultAttributeProvider;
 use TypeLang\Reader\Exception\TypeReadingException;
 
-class AttributeReader implements ReaderInterface
+final class AttributeReader implements ReaderInterface
 {
     /**
      * @param AttributeProviderInterface<object> $provider
