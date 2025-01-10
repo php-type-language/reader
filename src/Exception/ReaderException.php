@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TypeLang\Reader\Exception;
 
 /**
- * @psalm-consistent-constructor
+ * @phpstan-consistent-constructor
  */
 class ReaderException extends \LogicException implements ReaderExceptionInterface
 {
