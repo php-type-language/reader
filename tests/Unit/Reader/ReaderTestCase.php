@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader\Tests\Unit\Reader;
 
+use Composer\InstalledVersions;
 use PHPUnit\Framework\Attributes\Group;
 use TypeLang\Parser\Node\Node;
 use TypeLang\Parser\Node\Stmt\TypeStatement;
@@ -41,6 +42,13 @@ abstract class ReaderTestCase extends TestCase
     public static function readersDataProvider(): iterable
     {
         yield ReflectionReader::class => [new ReflectionReader()];
-        yield AttributeReader::class => [new AttributeReader()];
+
+        $parserVersion = InstalledVersions::getVersion('type-lang/parser')
+            ?? '0.0.0.0';
+
+        // @see https://github.com/php-type-language/parser/releases/tag/1.2.1
+        if (\version_compare($parserVersion, '1.2.1', '>=')) {
+            yield AttributeReader::class => [new AttributeReader()];
+        }
     }
 }
