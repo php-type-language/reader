@@ -64,7 +64,7 @@ TypeLang\Parser\Node\Stmt\NamedTypeNode {
 $class = new \ReflectionClass(Path\To\Example::class);
 
 // Printer component provided by "type-lang/printer" package.
-$printer = new \TypeLang\Printer\PrettyPrinter();
+$printer = new \TypeLang\Printer\PrettyTypePrinter();
 
 $converter = new \TypeLang\Reader\ReflectionReader();
 
