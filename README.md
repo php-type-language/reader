@@ -2,8 +2,6 @@
     <img align="center" src="https://github.com/php-type-language/.github/blob/master/assets/dark.png?raw=true">
 </a>
 
----
-
 <p align="center">
     <a href="https://packagist.org/packages/type-lang/reader"><img src="https://poser.pugx.org/type-lang/reader/require/php?style=for-the-badge" alt="PHP 8.1+"></a>
     <a href="https://packagist.org/packages/type-lang/reader"><img src="https://poser.pugx.org/type-lang/reader/version?style=for-the-badge" alt="Latest Stable Version"></a>
@@ -13,6 +11,8 @@
 <p align="center">
     <a href="https://github.com/php-type-language/reader/actions"><img src="https://github.com/php-type-language/reader/workflows/tests/badge.svg"></a>
 </p>
+
+---
 
 Provides a set of methods for converting PHP Reflection objects into the
 TypeLang AST Nodes.

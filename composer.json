@@ -9,8 +9,8 @@
         "issues": "https://github.com/php-type-language/reader/issues"
     },
     "require": {
-        "php": "^8.1",
-        "type-lang/parser": "^1.0"
+        "php": "^8.4",
+        "type-lang/types": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -18,12 +18,9 @@
         }
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.53",
-        "phpstan/phpstan": "^2.1",
-        "phpstan/phpstan-strict-rules": "^2.0",
-        "phpunit/phpunit": "^10.5|^11.0",
-        "symfony/var-dumper": "^5.4|^6.0|^7.0",
-        "type-lang/printer": "^1.0"
+        "phpstan/phpstan": "^2.2",
+        "phpunit/phpunit": "^13.2",
+        "type-lang/printer": "^2.0"
     },
     "autoload-dev": {
         "psr-4": {
@@ -32,8 +29,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev",
-            "dev-main": "1.x-dev"
+            "dev-master": "2.x-dev",
+            "dev-main": "2.x-dev"
         }
     },
     "config": {
@@ -45,20 +42,11 @@
             "*": "dist"
         }
     },
+    "scripts-aliases": {
+        "test:unit": ["test", "phpunit", "unit"]
+    },
     "scripts": {
-        "build": "@php bin/build",
-
-        "test": ["@test:unit", "@test:functional"],
-        "test:unit": "phpunit --testdox --testsuite=unit",
-        "test:functional": "phpunit --testsuite=functional",
-
-        "linter": "@linter:check",
-        "linter:check": "phpstan analyse --configuration phpstan.neon",
-        "linter:baseline": "phpstan analyse --configuration phpstan.neon --generate-baseline",
-
-        "phpcs": "@phpcs:check",
-        "phpcs:check": "php-cs-fixer fix --config=.php-cs-fixer.php --allow-risky=yes --dry-run --verbose --diff",
-        "phpcs:fix": "php-cs-fixer fix --config=.php-cs-fixer.php --allow-risky=yes --verbose --diff"
+        "test:unit": "phpunit --testdox"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

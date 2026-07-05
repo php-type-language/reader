@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\Reader\Tests\Unit\Reader\Stub;
-
-use TypeLang\Reader\Attribute\MapType;
+namespace TypeLang\Reader\Tests\Stub;
 
 enum __ConstantReaderEnum: int
 {
@@ -13,12 +11,15 @@ enum __ConstantReaderEnum: int
 
 final class ConstantReaderStub
 {
-    #[MapType('int')]
     public const int SINGLE = 0xDEAD_BEEF;
-    #[MapType('string|int')]
+
     public const int|string UNION = 0xDEAD_BEEF;
-    #[MapType('\TypeLang\Reader\Tests\Unit\Reader\Stub\__ConstantReaderEnum&\BackedEnum')]
+
     public const __ConstantReaderEnum&\BackedEnum INTERSECTION = __ConstantReaderEnum::EXAMPLE;
-    #[MapType('(\TypeLang\Reader\Tests\Unit\Reader\Stub\__ConstantReaderEnum&\BackedEnum)|array')]
+
     public const (__ConstantReaderEnum&\BackedEnum)|array COMPOSITE = __ConstantReaderEnum::EXAMPLE;
+
+    public const ?int NULLABLE = null;
+
+    public const UNTYPED = 0xDEAD_BEEF;
 }

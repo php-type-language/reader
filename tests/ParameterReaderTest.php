@@ -2,22 +2,17 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\Reader\Tests\Unit\Reader;
+namespace TypeLang\Reader\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhp;
-use TypeLang\Parser\Node\FullQualifiedName;
-use TypeLang\Parser\Node\Identifier;
-use TypeLang\Parser\Node\Stmt\IntersectionTypeNode;
-use TypeLang\Parser\Node\Stmt\NamedTypeNode;
-use TypeLang\Parser\Node\Stmt\UnionTypeNode;
 use TypeLang\Reader\ParameterReaderInterface;
-use TypeLang\Reader\Tests\Unit\Reader\Stub\MethodReaderStub;
-use TypeLang\Reader\Tests\Unit\Reader\Stub\ParameterReaderStub;
-use TypeLang\Reader\Tests\Unit\Reader\Stub\ParameterReaderStubPHP82;
+use TypeLang\Reader\Tests\Stub\ParameterReaderStub;
+use TypeLang\Type\IntersectionTypeNode;
+use TypeLang\Type\NullableTypeNode;
+use TypeLang\Type\UnionTypeNode;
 
-#[Group('unit'), Group('type-lang/reader')]
+#[Group('type-lang/reader')]
 class ParameterReaderTest extends ReaderTestCase
 {
     #[DataProvider('readersDataProvider')]
@@ -27,9 +22,7 @@ class ParameterReaderTest extends ReaderTestCase
             parameter: new \ReflectionParameter(ParameterReaderStub::withSingleType(...), 0),
         );
 
-        self::assertSameType(new NamedTypeNode(
-            name: new Identifier('int'),
-        ), $type);
+        self::assertSameType(self::builtin('int'), $type);
     }
 
     #[DataProvider('readersDataProvider')]
@@ -40,8 +33,8 @@ class ParameterReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new UnionTypeNode(
-            a: new NamedTypeNode('string'),
-            b: new NamedTypeNode('int'),
+            self::builtin('string'),
+            self::builtin('int'),
         ), $type);
     }
 
@@ -53,25 +46,44 @@ class ParameterReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new IntersectionTypeNode(
-            a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
-            b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
+            self::classType(\ArrayAccess::class),
+            self::classType(\Traversable::class),
         ), $type);
     }
 
-    #[RequiresPhp('>=8.2')]
     #[DataProvider('readersDataProvider')]
     public function testCompositeType(ParameterReaderInterface $reader): void
     {
         $type = $reader->findParameterType(
-            parameter: new \ReflectionParameter(ParameterReaderStubPHP82::withCompositeType(...), 0),
+            parameter: new \ReflectionParameter(ParameterReaderStub::withCompositeType(...), 0),
         );
 
         self::assertSameType(new UnionTypeNode(
-            a: new IntersectionTypeNode(
-                a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
-                b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
+            new IntersectionTypeNode(
+                self::classType(\ArrayAccess::class),
+                self::classType(\Traversable::class),
             ),
-            b: new NamedTypeNode('array'),
+            self::builtin('array'),
         ), $type);
+    }
+
+    #[DataProvider('readersDataProvider')]
+    public function testNullableType(ParameterReaderInterface $reader): void
+    {
+        $type = $reader->findParameterType(
+            parameter: new \ReflectionParameter(ParameterReaderStub::withNullableType(...), 0),
+        );
+
+        self::assertSameType(new NullableTypeNode(self::builtin('int')), $type);
+    }
+
+    #[DataProvider('readersDataProvider')]
+    public function testUntypedParameterHasNoType(ParameterReaderInterface $reader): void
+    {
+        $type = $reader->findParameterType(
+            parameter: new \ReflectionParameter(ParameterReaderStub::withoutType(...), 0),
+        );
+
+        self::assertNull($type);
     }
 }

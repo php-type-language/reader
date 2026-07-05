@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\Reader\Tests\Unit\Reader\Stub;
-
-use TypeLang\Reader\Attribute\MapType;
+namespace TypeLang\Reader\Tests\Stub;
 
 interface MethodReaderStub
 {
-    #[MapType('int')]
     public function getSingleType(): int;
-    #[MapType('string|int')]
+
     public function getUnionType(): int|string;
-    #[MapType('\ArrayAccess&\Traversable')]
+
     public function getIntersectionType(): \ArrayAccess&\Traversable;
+
+    public function getCompositeType(): (\ArrayAccess&\Traversable)|array;
 }

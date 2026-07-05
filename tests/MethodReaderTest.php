@@ -2,21 +2,16 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\Reader\Tests\Unit\Reader;
+namespace TypeLang\Reader\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhp;
-use TypeLang\Parser\Node\FullQualifiedName;
-use TypeLang\Parser\Node\Identifier;
-use TypeLang\Parser\Node\Stmt\IntersectionTypeNode;
-use TypeLang\Parser\Node\Stmt\NamedTypeNode;
-use TypeLang\Parser\Node\Stmt\UnionTypeNode;
 use TypeLang\Reader\FunctionReaderInterface;
-use TypeLang\Reader\Tests\Unit\Reader\Stub\MethodReaderStub;
-use TypeLang\Reader\Tests\Unit\Reader\Stub\MethodReaderStubPHP82;
+use TypeLang\Reader\Tests\Stub\MethodReaderStub;
+use TypeLang\Type\IntersectionTypeNode;
+use TypeLang\Type\UnionTypeNode;
 
-#[Group('unit'), Group('type-lang/reader')]
+#[Group('type-lang/reader')]
 class MethodReaderTest extends ReaderTestCase
 {
     #[DataProvider('readersDataProvider')]
@@ -26,9 +21,7 @@ class MethodReaderTest extends ReaderTestCase
             function: new \ReflectionMethod(MethodReaderStub::class, 'getSingleType'),
         );
 
-        self::assertSameType(new NamedTypeNode(
-            name: new Identifier('int'),
-        ), $type);
+        self::assertSameType(self::builtin('int'), $type);
     }
 
     #[DataProvider('readersDataProvider')]
@@ -39,8 +32,8 @@ class MethodReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new UnionTypeNode(
-            a: new NamedTypeNode('string'),
-            b: new NamedTypeNode('int'),
+            self::builtin('string'),
+            self::builtin('int'),
         ), $type);
     }
 
@@ -52,25 +45,24 @@ class MethodReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new IntersectionTypeNode(
-            a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
-            b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
+            self::classType(\ArrayAccess::class),
+            self::classType(\Traversable::class),
         ), $type);
     }
 
-    #[RequiresPhp('>=8.2')]
     #[DataProvider('readersDataProvider')]
     public function testCompositeType(FunctionReaderInterface $reader): void
     {
         $type = $reader->findFunctionType(
-            function: new \ReflectionMethod(MethodReaderStubPHP82::class, 'getCompositeType'),
+            function: new \ReflectionMethod(MethodReaderStub::class, 'getCompositeType'),
         );
 
         self::assertSameType(new UnionTypeNode(
-            a: new IntersectionTypeNode(
-                a: new NamedTypeNode(new FullQualifiedName(\ArrayAccess::class)),
-                b: new NamedTypeNode(new FullQualifiedName(\Traversable::class)),
+            new IntersectionTypeNode(
+                self::classType(\ArrayAccess::class),
+                self::classType(\Traversable::class),
             ),
-            b: new NamedTypeNode('array'),
+            self::builtin('array'),
         ), $type);
     }
 }

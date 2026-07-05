@@ -2,24 +2,20 @@
 
 declare(strict_types=1);
 
-namespace TypeLang\Reader\Tests\Unit\Reader;
+namespace TypeLang\Reader\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RequiresPhp;
-use TypeLang\Parser\Node\FullQualifiedName;
-use TypeLang\Parser\Node\Identifier;
-use TypeLang\Parser\Node\Stmt\IntersectionTypeNode;
-use TypeLang\Parser\Node\Stmt\NamedTypeNode;
-use TypeLang\Parser\Node\Stmt\UnionTypeNode;
 use TypeLang\Reader\ConstantReaderInterface;
-use TypeLang\Reader\Tests\Unit\Reader\Stub\__ConstantReaderEnum;
-use TypeLang\Reader\Tests\Unit\Reader\Stub\ConstantReaderStub;
+use TypeLang\Reader\Tests\Stub\__ConstantReaderEnum;
+use TypeLang\Reader\Tests\Stub\ConstantReaderStub;
+use TypeLang\Type\IntersectionTypeNode;
+use TypeLang\Type\NullableTypeNode;
+use TypeLang\Type\UnionTypeNode;
 
-#[Group('unit'), Group('type-lang/reader')]
+#[Group('type-lang/reader')]
 class ConstantReaderTest extends ReaderTestCase
 {
-    #[RequiresPhp('>=8.3')]
     #[DataProvider('readersDataProvider')]
     public function testSimpleType(ConstantReaderInterface $reader): void
     {
@@ -27,12 +23,9 @@ class ConstantReaderTest extends ReaderTestCase
             constant: new \ReflectionClassConstant(ConstantReaderStub::class, 'SINGLE'),
         );
 
-        self::assertSameType(new NamedTypeNode(
-            name: new Identifier('int'),
-        ), $type);
+        self::assertSameType(self::builtin('int'), $type);
     }
 
-    #[RequiresPhp('>=8.3')]
     #[DataProvider('readersDataProvider')]
     public function testUnionType(ConstantReaderInterface $reader): void
     {
@@ -41,12 +34,11 @@ class ConstantReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new UnionTypeNode(
-            a: new NamedTypeNode('string'),
-            b: new NamedTypeNode('int'),
+            self::builtin('string'),
+            self::builtin('int'),
         ), $type);
     }
 
-    #[RequiresPhp('>=8.3')]
     #[DataProvider('readersDataProvider')]
     public function testIntersectionType(ConstantReaderInterface $reader): void
     {
@@ -55,12 +47,11 @@ class ConstantReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new IntersectionTypeNode(
-            a: new NamedTypeNode(new FullQualifiedName(__ConstantReaderEnum::class)),
-            b: new NamedTypeNode(new FullQualifiedName(\BackedEnum::class)),
+            self::classType(__ConstantReaderEnum::class),
+            self::classType(\BackedEnum::class),
         ), $type);
     }
 
-    #[RequiresPhp('>=8.3')]
     #[DataProvider('readersDataProvider')]
     public function testCompositeType(ConstantReaderInterface $reader): void
     {
@@ -69,11 +60,31 @@ class ConstantReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new UnionTypeNode(
-            a: new IntersectionTypeNode(
-                a: new NamedTypeNode(new FullQualifiedName(__ConstantReaderEnum::class)),
-                b: new NamedTypeNode(new FullQualifiedName(\BackedEnum::class)),
+            new IntersectionTypeNode(
+                self::classType(__ConstantReaderEnum::class),
+                self::classType(\BackedEnum::class),
             ),
-            b: new NamedTypeNode('array'),
+            self::builtin('array'),
         ), $type);
+    }
+
+    #[DataProvider('readersDataProvider')]
+    public function testNullableType(ConstantReaderInterface $reader): void
+    {
+        $type = $reader->findConstantType(
+            constant: new \ReflectionClassConstant(ConstantReaderStub::class, 'NULLABLE'),
+        );
+
+        self::assertSameType(new NullableTypeNode(self::builtin('int')), $type);
+    }
+
+    #[DataProvider('readersDataProvider')]
+    public function testUntypedConstantHasNoType(ConstantReaderInterface $reader): void
+    {
+        $type = $reader->findConstantType(
+            constant: new \ReflectionClassConstant(ConstantReaderStub::class, 'UNTYPED'),
+        );
+
+        self::assertNull($type);
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader;
 
-use TypeLang\Parser\Node\Stmt\TypeStatement;
 use TypeLang\Reader\Exception\ReaderExceptionInterface;
+use TypeLang\Type\TypeNode;
 
 interface ParameterReaderInterface
 {
@@ -14,5 +14,5 @@ interface ParameterReaderInterface
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */
-    public function findParameterType(\ReflectionParameter $parameter): ?TypeStatement;
+    public function findParameterType(\ReflectionParameter $parameter): ?TypeNode;
 }

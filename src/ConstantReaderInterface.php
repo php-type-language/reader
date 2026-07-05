@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader;
 
-use TypeLang\Parser\Node\Stmt\TypeStatement;
 use TypeLang\Reader\Exception\ReaderExceptionInterface;
+use TypeLang\Type\TypeNode;
 
 interface ConstantReaderInterface
 {
@@ -14,5 +14,5 @@ interface ConstantReaderInterface
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */
-    public function findConstantType(\ReflectionClassConstant $constant): ?TypeStatement;
+    public function findConstantType(\ReflectionClassConstant $constant): ?TypeNode;
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader;
 
-use TypeLang\Parser\Node\Stmt\TypeStatement;
 use TypeLang\Reader\Exception\ReaderExceptionInterface;
+use TypeLang\Type\TypeNode;
 
 interface PropertyReaderInterface
 {
@@ -14,5 +14,8 @@ interface PropertyReaderInterface
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */
-    public function findPropertyType(\ReflectionProperty $property): ?TypeStatement;
+    public function findPropertyType(
+        \ReflectionProperty $property,
+        PropertyAccessDirection $access = PropertyAccessDirection::DEFAULT,
+    ): ?TypeNode;
 }

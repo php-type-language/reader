@@ -4,81 +4,106 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader;
 
-use TypeLang\Parser\Node\FullQualifiedName;
-use TypeLang\Parser\Node\Name;
-use TypeLang\Parser\Node\Stmt\IntersectionTypeNode;
-use TypeLang\Parser\Node\Stmt\NamedTypeNode;
-use TypeLang\Parser\Node\Stmt\NullableTypeNode;
-use TypeLang\Parser\Node\Stmt\TypeStatement;
-use TypeLang\Parser\Node\Stmt\UnionTypeNode;
 use TypeLang\Reader\Exception\ReaderExceptionInterface;
+use TypeLang\Reader\Exception\UnrecognizedConstantTypeException;
+use TypeLang\Reader\Exception\UnrecognizedFunctionTypeException;
+use TypeLang\Reader\Exception\UnrecognizedParameterTypeException;
+use TypeLang\Reader\Exception\UnrecognizedPropertyTypeException;
 use TypeLang\Reader\Exception\UnrecognizedReflectionTypeException;
+use TypeLang\Reader\Exception\UnrecognizedTypeException;
+use TypeLang\Type\IntersectionTypeNode;
+use TypeLang\Type\Name;
+use TypeLang\Type\NamedTypeNode;
+use TypeLang\Type\NullableTypeNode;
+use TypeLang\Type\TypeNode;
+use TypeLang\Type\UnionTypeNode;
 
 final class ReflectionReader implements ReaderInterface
 {
-    public function findConstantType(\ReflectionClassConstant $constant): ?TypeStatement
+    public function findConstantType(\ReflectionClassConstant $constant): ?TypeNode
     {
-        if (\PHP_VERSION_ID < 80300) {
-            return null;
-        }
-
-        /**
-         * @var \ReflectionType|null $type
-         *
-         * @phpstan-ignore-next-line : This method available since PHP 8.3
-         */
         $type = $constant->getType();
 
         if ($type instanceof \ReflectionType) {
             try {
                 return $this->getType($type);
-            } catch (UnrecognizedReflectionTypeException) {
-                throw UnrecognizedReflectionTypeException::fromReflectionConstant($type, $constant);
+            } catch (UnrecognizedReflectionTypeException $e) {
+                throw UnrecognizedConstantTypeException::becauseConstantTypeIsUnrecognized($type, $constant, $e);
             }
         }
 
         return null;
     }
 
-    public function findPropertyType(\ReflectionProperty $property): ?TypeStatement
+    private function findPropertyNativeReadType(\ReflectionProperty $property): ?\ReflectionType
     {
-        $type = $property->getType();
+        return $property->getType();
+    }
+
+    private function findPropertyNativeWriteType(\ReflectionProperty $property): ?\ReflectionType
+    {
+        $setter = $property->getHook(\PropertyHookType::Set);
+
+        if ($setter === null) {
+            return $this->findPropertyNativeReadType($property);
+        }
+
+        foreach ($setter->getParameters() as $parameter) {
+            $type = $parameter->getType();
+
+            if ($type instanceof \ReflectionType) {
+                return $type;
+            }
+
+            break;
+        }
+
+        return $this->findPropertyNativeReadType($property);
+    }
+
+    public function findPropertyType(
+        \ReflectionProperty $property,
+        PropertyAccessDirection $access = PropertyAccessDirection::DEFAULT,
+    ): ?TypeNode {
+        $type = $access === PropertyAccessDirection::Read
+            ? $this->findPropertyNativeReadType($property)
+            : $this->findPropertyNativeWriteType($property);
 
         if ($type instanceof \ReflectionType) {
             try {
                 return $this->getType($type);
-            } catch (UnrecognizedReflectionTypeException) {
-                throw UnrecognizedReflectionTypeException::fromReflectionProperty($type, $property);
+            } catch (UnrecognizedReflectionTypeException $e) {
+                throw UnrecognizedPropertyTypeException::becausePropertyTypeIsUnrecognized($type, $property, $e);
             }
         }
 
         return null;
     }
 
-    public function findFunctionType(\ReflectionFunctionAbstract $function): ?TypeStatement
+    public function findFunctionType(\ReflectionFunctionAbstract $function): ?TypeNode
     {
         $type = $function->getReturnType();
 
         if ($type instanceof \ReflectionType) {
             try {
                 return $this->getType($type);
-            } catch (UnrecognizedReflectionTypeException) {
-                throw UnrecognizedReflectionTypeException::fromReflectionFunction($type, $function);
+            } catch (UnrecognizedReflectionTypeException $e) {
+                throw UnrecognizedFunctionTypeException::becauseFunctionTypeIsUnrecognized($type, $function, $e);
             }
         }
 
         return null;
     }
 
-    public function findParameterType(\ReflectionParameter $parameter): ?TypeStatement
+    public function findParameterType(\ReflectionParameter $parameter): ?TypeNode
     {
         $type = $parameter->getType();
 
         if ($type instanceof \ReflectionType) {
             try {
                 return $this->getType($type);
-            } catch (UnrecognizedReflectionTypeException) {
-                throw UnrecognizedReflectionTypeException::fromReflectionParameter($type, $parameter);
+            } catch (UnrecognizedReflectionTypeException $e) {
+                throw UnrecognizedParameterTypeException::becauseParameterTypeIsUnrecognized($type, $parameter, $e);
             }
         }
 
@@ -89,19 +114,19 @@ final class ReflectionReader implements ReaderInterface
      * @api
      *
      * @throws ReaderExceptionInterface
-     * @throws UnrecognizedReflectionTypeException
+     * @throws UnrecognizedTypeException
      */
-    public function getType(\ReflectionType $type): TypeStatement
+    public function getType(\ReflectionType $type): TypeNode
     {
         return match (true) {
             $type instanceof \ReflectionUnionType => $this->convertUnionType($type),
             $type instanceof \ReflectionIntersectionType => $this->convertIntersectionType($type),
             $type instanceof \ReflectionNamedType => $this->convertNamedType($type),
-            default => throw UnrecognizedReflectionTypeException::fromReflectionType($type),
+            default => throw UnrecognizedTypeException::becauseTypeIsUnrecognized($type),
         };
     }
 
-    private function convertNamedType(\ReflectionNamedType $type): TypeStatement
+    private function convertNamedType(\ReflectionNamedType $type): TypeNode
     {
         $result = $this->convertNonNullNamedType($type);
 
@@ -112,22 +137,22 @@ final class ReflectionReader implements ReaderInterface
         return $result;
     }
 
-    private function convertNonNullNamedType(\ReflectionNamedType $type): TypeStatement
+    private function convertNonNullNamedType(\ReflectionNamedType $type): TypeNode
     {
         /** @var non-empty-string $literal */
         $literal = $type->getName();
 
-        $name = new Name($literal);
+        $name = Name::createFromString($literal);
 
-        if ($type->isBuiltin() || $name->isSpecial() || $name->isBuiltin()) {
+        if ($type->isBuiltin() || $name->isSpecial || $name->isBuiltin) {
             return new NamedTypeNode($name);
         }
 
-        return new NamedTypeNode(new FullQualifiedName($name));
+        return new NamedTypeNode($name->toFullQualified());
     }
 
     /**
-     * @return UnionTypeNode<TypeStatement>
+     * @return UnionTypeNode<TypeNode>
      * @throws ReaderExceptionInterface
      */
     private function convertUnionType(\ReflectionUnionType $type): UnionTypeNode
@@ -142,7 +167,7 @@ final class ReflectionReader implements ReaderInterface
     }
 
     /**
-     * @return IntersectionTypeNode<TypeStatement>
+     * @return IntersectionTypeNode<TypeNode>
      * @throws ReaderExceptionInterface
      */
     private function convertIntersectionType(\ReflectionIntersectionType $type): IntersectionTypeNode
