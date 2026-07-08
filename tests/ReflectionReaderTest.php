@@ -63,8 +63,6 @@ class ReflectionReaderTest extends ReaderTestCase
      */
     public function testMixedTypeIsNotNullable(): void
     {
-        self::markTestSkipped('Known bug: "mixed" is wrapped into a NullableTypeNode ("?mixed")');
-
         // @phpstan-ignore-next-line deadCode.unreachable
         $reader = new ReflectionReader();
 

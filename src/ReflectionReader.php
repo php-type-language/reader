@@ -20,6 +20,11 @@ use TypeLang\Type\UnionTypeNode;
 
 final class ReflectionReader implements ReaderInterface
 {
+    /**
+     * @var list<non-empty-lowercase-string>
+     */
+    private const array NULLABLE_BUILTIN_TYPES = ['null', 'mixed'];
+
     public function findConstantType(\ReflectionClassConstant $constant): ?TypeNode
     {
         $type = $constant->getType();
@@ -130,7 +135,7 @@ final class ReflectionReader implements ReaderInterface
     {
         $result = $this->convertNonNullNamedType($type);
 
-        if ($type->allowsNull() && $type->getName() !== 'null') {
+        if ($type->allowsNull() && !\in_array($type->getName(), self::NULLABLE_BUILTIN_TYPES, true)) {
             return new NullableTypeNode($result);
         }
 
