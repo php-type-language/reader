@@ -14,88 +14,65 @@
 
 ---
 
-Provides a set of methods for converting PHP Reflection objects into the
-TypeLang AST Nodes.
+Converts native PHP types exposed by Reflection objects into **TypeLang**
+`TypeLang\Type\*` AST nodes.
 
-Read [documentation pages](https://typelang.dev) for more information.
+Given a `ReflectionClassConstant`, `ReflectionProperty`, `ReflectionParameter`
+or `ReflectionFunctionAbstract`, it returns the matching type node (or `null`
+when no type is declared).
+
+Full documentation is available at [typelang.dev](https://typelang.dev).
 
 ## Installation
 
-TypeLang Reader is available as Composer repository and can 
-be installed using the following command in a root of your project:
+Install the package via [Composer](https://getcomposer.org):
 
 ```sh
 composer require type-lang/reader
 ```
 
-## Quick Start
+**Requirements:** 
+- PHP 8.4+
+
+## Usage
+
+`TypeLang\Reader\ReflectionReader` exposes a `find*Type()` method for every kind
+of Reflection object:
 
 ```php
-$reader = new \TypeLang\Reader\ReflectionReader();
+$reader = new TypeLang\Reader\ReflectionReader();
 
 $node = $reader->findFunctionType(
-    function: new \ReflectionFunction(function(): void {}),
+    new ReflectionFunction(function (): void {}),
 );
 
 var_dump($node);
+// object(TypeLang\Type\NamedTypeNode) {
+//   ["name"] => "void"
+//   ...
+// }
 ```
 
-**Expected Output:**
-```
-TypeLang\Parser\Node\Stmt\NamedTypeNode {
-  +offset: 0
-  +name: TypeLang\Parser\Node\Name {
-    +offset: 0
-    -parts: array:1 [
-      0 => TypeLang\Parser\Node\Identifier {
-        +offset: 0
-        +value: "void"
-      }
-    ]
-  }
-  +arguments: null
-  +fields: null
-}
-```
-
-### Creating From Reflection
+Combine it with [`type-lang/printer`](https://packagist.org/packages/type-lang/printer)
+to dump the resolved types of a whole class:
 
 ```php
-$class = new \ReflectionClass(Path\To\Example::class);
+$class = new ReflectionClass(Path\To\Example::class);
+$reader = new TypeLang\Reader\ReflectionReader();
+$printer = new TypeLang\Printer\PrettyTypePrinter();
 
-// Printer component provided by "type-lang/printer" package.
-$printer = new \TypeLang\Printer\PrettyTypePrinter();
-
-$converter = new \TypeLang\Reader\ReflectionReader();
-
-// Dump all constants with its types.
-foreach ($class->getReflectionConstants() as $constant) {
-    // Creates type node AST from a constant's type.
-    if ($type = $converter->findConstantType($constant)) {
-        echo 'const ' . $constant->name . ' has type ' . $printer->print($type) . "\n";
-    }
-}
-
-// Dump all properties with its types.
 foreach ($class->getProperties() as $property) {
-    // Creates type node AST from a property's type.
-    if ($type = $converter->findPropertyType($property)) {
-        echo 'property ' . $property->name . ' has type ' . $printer->print($type) . "\n";
+    if ($type = $reader->findPropertyType($property)) {
+        echo "property {$property->name}: {$printer->print($type)}\n";
     }
 }
 
-// Dump all methods with its types.
 foreach ($class->getMethods() as $method) {
-    // Creates type node AST from any function's return type.
-    if ($type = $converter->findFunctionType($method)) {
-        echo 'function ' . $method->name . ' has type ' . $printer->print($type) . "\n";
-    }
-    
-    // Creates type node AST from a parameter's type.
-    foreach ($method->getParameters() as $parameter) {
-        if ($type = $converter->findParameterType($parameter)) {
-            echo 'parameter ' . $parameter->name . ' has type ' . $printer->print($type) . "\n";
-        }
+    if ($type = $reader->findFunctionType($method)) {
+        echo "method {$method->name}(): {$printer->print($type)}\n";
     }
 }
 ```
+
+Constants (`findConstantType()`) and parameters (`findParameterType()`) are read
+the same way.
