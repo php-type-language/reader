@@ -18,8 +18,8 @@
         }
     },
     "require-dev": {
-        "phpstan/phpstan": "^2.2",
-        "phpunit/phpunit": "^13.2",
+        "phpstan/phpstan": "^2.2.5",
+        "phpunit/phpunit": "^13.2.4",
         "type-lang/printer": "^2.0"
     },
     "autoload-dev": {
