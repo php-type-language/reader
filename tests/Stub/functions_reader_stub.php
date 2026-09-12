@@ -10,8 +10,6 @@ function get_union_type(): int|string {}
 
 function get_intersection_type(): \ArrayAccess&\Traversable {}
 
-function get_composite_type(): (\ArrayAccess&\Traversable)|array {}
-
 function get_nullable_type(): ?int {}
 
 function get_void_type(): void {}

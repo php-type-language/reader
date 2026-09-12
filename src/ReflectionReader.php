@@ -23,10 +23,15 @@ final class ReflectionReader implements ReaderInterface
     /**
      * @var list<non-empty-lowercase-string>
      */
-    private const array NULLABLE_BUILTIN_TYPES = ['null', 'mixed'];
+    private const NULLABLE_BUILTIN_TYPES = ['null', 'mixed'];
 
     public function findConstantType(\ReflectionClassConstant $constant): ?TypeNode
     {
+        // Constant types are available since PHP 8.3
+        if (!\method_exists($constant, 'getType')) {
+            return null;
+        }
+
         $type = $constant->getType();
 
         if ($type instanceof \ReflectionType) {
@@ -47,7 +52,13 @@ final class ReflectionReader implements ReaderInterface
 
     private function findPropertyNativeWriteType(\ReflectionProperty $property): ?\ReflectionType
     {
-        $setter = $property->getHook(\PropertyHookType::Set);
+        // Property hooks are available since PHP 8.4
+        if (!\method_exists($property, 'getHook')) {
+            return $this->findPropertyNativeReadType($property);
+        }
+
+        /** @var \ReflectionMethod|null $setter */
+        $setter = $property->getHook(\constant('PropertyHookType::Set'));
 
         if ($setter === null) {
             return $this->findPropertyNativeReadType($property);
@@ -149,7 +160,7 @@ final class ReflectionReader implements ReaderInterface
 
         $name = Name::createFromString($literal);
 
-        if ($type->isBuiltin() || $name->isSpecial || $name->isBuiltin) {
+        if ($type->isBuiltin() || $name->isSpecial() || $name->isBuiltin()) {
             return new NamedTypeNode($name);
         }
 
@@ -168,7 +179,7 @@ final class ReflectionReader implements ReaderInterface
             $children[] = $this->getType($child);
         }
 
-        return new UnionTypeNode(...$children);
+        return new UnionTypeNode($children);
     }
 
     /**
@@ -183,6 +194,6 @@ final class ReflectionReader implements ReaderInterface
             $children[] = $this->getType($child);
         }
 
-        return new IntersectionTypeNode(...$children);
+        return new IntersectionTypeNode($children);
     }
 }

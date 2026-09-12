@@ -9,5 +9,5 @@ enum PropertyAccessDirection
     case Read;
     case Write;
 
-    public const self DEFAULT = self::Read;
+    public const DEFAULT = self::Read;
 }

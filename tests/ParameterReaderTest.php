@@ -6,8 +6,10 @@ namespace TypeLang\Reader\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use TypeLang\Reader\ParameterReaderInterface;
 use TypeLang\Reader\Tests\Stub\ParameterReaderStub;
+use TypeLang\Reader\Tests\Stub\ParameterReaderStub82;
 use TypeLang\Type\IntersectionTypeNode;
 use TypeLang\Type\NullableTypeNode;
 use TypeLang\Type\UnionTypeNode;
@@ -32,10 +34,10 @@ class ParameterReaderTest extends ReaderTestCase
             parameter: new \ReflectionParameter(ParameterReaderStub::withUnionType(...), 0),
         );
 
-        self::assertSameType(new UnionTypeNode(
+        self::assertSameType(new UnionTypeNode([
             self::builtin('string'),
-            self::builtin('int'),
-        ), $type);
+            self::builtin('int')
+        ]), $type);
     }
 
     #[DataProvider('readersDataProvider')]
@@ -45,26 +47,27 @@ class ParameterReaderTest extends ReaderTestCase
             parameter: new \ReflectionParameter(ParameterReaderStub::withIntersectionType(...), 0),
         );
 
-        self::assertSameType(new IntersectionTypeNode(
+        self::assertSameType(new IntersectionTypeNode([
             self::classType(\ArrayAccess::class),
-            self::classType(\Traversable::class),
-        ), $type);
+            self::classType(\Traversable::class)
+        ]), $type);
     }
 
     #[DataProvider('readersDataProvider')]
+    #[RequiresPhp('>= 8.2')]
     public function testCompositeType(ParameterReaderInterface $reader): void
     {
         $type = $reader->findParameterType(
-            parameter: new \ReflectionParameter(ParameterReaderStub::withCompositeType(...), 0),
+            parameter: new \ReflectionParameter(ParameterReaderStub82::withCompositeType(...), 0),
         );
 
-        self::assertSameType(new UnionTypeNode(
-            new IntersectionTypeNode(
+        self::assertSameType(new UnionTypeNode([
+            new IntersectionTypeNode([
                 self::classType(\ArrayAccess::class),
-                self::classType(\Traversable::class),
-            ),
-            self::builtin('array'),
-        ), $type);
+                self::classType(\Traversable::class)
+            ]),
+            self::builtin('array')
+        ]), $type);
     }
 
     #[DataProvider('readersDataProvider')]

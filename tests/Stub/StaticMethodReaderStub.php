@@ -11,6 +11,4 @@ interface StaticMethodReaderStub
     public static function getUnionType(): int|string;
 
     public static function getIntersectionType(): \ArrayAccess&\Traversable;
-
-    public static function getCompositeType(): (\ArrayAccess&\Traversable)|array;
 }

@@ -12,8 +12,6 @@ final class ParameterReaderStub
 
     public static function withIntersectionType(\ArrayAccess&\Traversable $param): void {}
 
-    public static function withCompositeType((\ArrayAccess&\Traversable)|array $param): void {}
-
     public static function withNullableType(?int $param): void {}
 
     public static function withoutType($param): void {}

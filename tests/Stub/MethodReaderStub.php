@@ -11,6 +11,4 @@ interface MethodReaderStub
     public function getUnionType(): int|string;
 
     public function getIntersectionType(): \ArrayAccess&\Traversable;
-
-    public function getCompositeType(): (\ArrayAccess&\Traversable)|array;
 }
