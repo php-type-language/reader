@@ -56,7 +56,7 @@ class PropertyReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.2')]
+    #[RequiresPhp('>= 8.2.0')]
     public function testCompositeType(PropertyReaderInterface $reader): void
     {
         $type = $reader->findPropertyType(
@@ -93,7 +93,7 @@ class PropertyReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.4')]
+    #[RequiresPhp('>= 8.4.0')]
     public function testHookedPropertyReadType(PropertyReaderInterface $reader): void
     {
         $type = $reader->findPropertyType(
@@ -105,7 +105,7 @@ class PropertyReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.4')]
+    #[RequiresPhp('>= 8.4.0')]
     public function testHookedPropertyWriteType(PropertyReaderInterface $reader): void
     {
         $type = $reader->findPropertyType(

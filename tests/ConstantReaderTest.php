@@ -19,7 +19,7 @@ use TypeLang\Type\UnionTypeNode;
 class ConstantReaderTest extends ReaderTestCase
 {
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.3')]
+    #[RequiresPhp('>= 8.3.0')]
     public function testSimpleType(ConstantReaderInterface $reader): void
     {
         $type = $reader->findConstantType(
@@ -30,7 +30,7 @@ class ConstantReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.3')]
+    #[RequiresPhp('>= 8.3.0')]
     public function testUnionType(ConstantReaderInterface $reader): void
     {
         $type = $reader->findConstantType(
@@ -44,7 +44,7 @@ class ConstantReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.3')]
+    #[RequiresPhp('>= 8.3.0')]
     public function testIntersectionType(ConstantReaderInterface $reader): void
     {
         $type = $reader->findConstantType(
@@ -58,7 +58,7 @@ class ConstantReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.3')]
+    #[RequiresPhp('>= 8.3.0')]
     public function testCompositeType(ConstantReaderInterface $reader): void
     {
         $type = $reader->findConstantType(
@@ -75,7 +75,7 @@ class ConstantReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.3')]
+    #[RequiresPhp('>= 8.3.0')]
     public function testNullableType(ConstantReaderInterface $reader): void
     {
         $type = $reader->findConstantType(

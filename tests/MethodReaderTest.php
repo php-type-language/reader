@@ -53,7 +53,7 @@ class MethodReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.2')]
+    #[RequiresPhp('>= 8.2.0')]
     public function testCompositeType(FunctionReaderInterface $reader): void
     {
         $type = $reader->findFunctionType(

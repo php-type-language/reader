@@ -54,7 +54,7 @@ class ParameterReaderTest extends ReaderTestCase
     }
 
     #[DataProvider('readersDataProvider')]
-    #[RequiresPhp('>= 8.2')]
+    #[RequiresPhp('>= 8.2.0')]
     public function testCompositeType(ParameterReaderInterface $reader): void
     {
         $type = $reader->findParameterType(
