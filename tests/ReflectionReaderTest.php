@@ -57,7 +57,7 @@ class ReflectionReaderTest extends ReaderTestCase
 
     /**
      * The "mixed" type already includes "null", so it must not be wrapped into
-     * a {@see \TypeLang\Type\NullableTypeNode} ("?mixed" is not even valid PHP).
+     * a {@see \TypeLang\Type\WrappingTypeNode\NullableTypeNode} ("?mixed" is not even valid PHP).
      *
      * Currently {@see ReflectionReader::convertNamedType()} wraps it, because
      * {@see \ReflectionNamedType::allowsNull()} returns "true" for "mixed".

@@ -12,9 +12,9 @@ use TypeLang\Reader\PropertyReaderInterface;
 use TypeLang\Reader\Tests\Stub\PropertyReaderStub;
 use TypeLang\Reader\Tests\Stub\PropertyReaderStub82;
 use TypeLang\Reader\Tests\Stub\PropertyReaderStub84;
-use TypeLang\Type\IntersectionTypeNode;
-use TypeLang\Type\NullableTypeNode;
-use TypeLang\Type\UnionTypeNode;
+use TypeLang\Type\LogicalTypeNode\IntersectionTypeNode;
+use TypeLang\Type\WrappingTypeNode\NullableTypeNode;
+use TypeLang\Type\LogicalTypeNode\UnionTypeNode;
 
 #[Group('type-lang/reader')]
 class PropertyReaderTest extends ReaderTestCase

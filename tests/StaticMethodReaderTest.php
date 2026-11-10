@@ -10,8 +10,8 @@ use PHPUnit\Framework\Attributes\RequiresPhp;
 use TypeLang\Reader\FunctionReaderInterface;
 use TypeLang\Reader\Tests\Stub\StaticMethodReaderStub;
 use TypeLang\Reader\Tests\Stub\StaticMethodReaderStub82;
-use TypeLang\Type\IntersectionTypeNode;
-use TypeLang\Type\UnionTypeNode;
+use TypeLang\Type\LogicalTypeNode\IntersectionTypeNode;
+use TypeLang\Type\LogicalTypeNode\UnionTypeNode;
 
 #[Group('type-lang/reader')]
 class StaticMethodReaderTest extends ReaderTestCase

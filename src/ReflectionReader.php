@@ -11,12 +11,14 @@ use TypeLang\Reader\Exception\UnrecognizedParameterTypeException;
 use TypeLang\Reader\Exception\UnrecognizedPropertyTypeException;
 use TypeLang\Reader\Exception\UnrecognizedReflectionTypeException;
 use TypeLang\Reader\Exception\UnrecognizedTypeException;
-use TypeLang\Type\IntersectionTypeNode;
+use TypeLang\Type\LogicalTypeNode\IntersectionTypeNode;
+use TypeLang\Type\LogicalTypeNode\UnionTypeNode;
 use TypeLang\Type\Name;
 use TypeLang\Type\NamedTypeNode;
-use TypeLang\Type\NullableTypeNode;
+use TypeLang\Type\NamespaceName;
+use TypeLang\Type\NamespaceName\NamespaceKind;
 use TypeLang\Type\TypeNode;
-use TypeLang\Type\UnionTypeNode;
+use TypeLang\Type\WrappingTypeNode\NullableTypeNode;
 
 final class ReflectionReader implements ReaderInterface
 {
@@ -24,6 +26,31 @@ final class ReflectionReader implements ReaderInterface
      * @var list<non-empty-lowercase-string>
      */
     private const NULLABLE_BUILTIN_TYPES = ['null', 'mixed'];
+
+    /**
+     * @var list<non-empty-lowercase-string>
+     */
+    private const SPECIAL_CLASS_NAMES = ['self', 'parent', 'static'];
+
+    /**
+     * @var list<non-empty-lowercase-string>
+     */
+    private const BUILTIN_TYPE_NAMES = [
+        'mixed',
+        'string',
+        'int',
+        'float',
+        'bool',
+        'object',
+        'array',
+        'void',
+        'never',
+        'callable',
+        'iterable',
+        'null',
+        'true',
+        'false',
+    ];
 
     public function findConstantType(\ReflectionClassConstant $constant): ?TypeNode
     {
@@ -158,13 +185,30 @@ final class ReflectionReader implements ReaderInterface
         /** @var non-empty-string $literal */
         $literal = $type->getName();
 
-        $name = Name::createFromString($literal);
+        $lowercase = \strtolower($literal);
 
-        if ($type->isBuiltin() || $name->isSpecial() || $name->isBuiltin()) {
-            return new NamedTypeNode($name);
+        if (
+            $type->isBuiltin()
+            || \in_array($lowercase, self::SPECIAL_CLASS_NAMES, true)
+            || \in_array($lowercase, self::BUILTIN_TYPE_NAMES, true)
+        ) {
+            return new NamedTypeNode(new Name($literal));
         }
 
-        return new NamedTypeNode($name->toFullQualified());
+        $separator = \strrpos($literal, '\\');
+
+        // A class with no namespace stands right in the root one
+        if ($separator === false) {
+            return new NamedTypeNode(new Name($literal, new NamespaceName('', NamespaceKind::FullyQualified)));
+        }
+
+        /** @var non-empty-string $word */
+        $word = \substr($literal, $separator + 1);
+
+        /** @var non-empty-string $namespace */
+        $namespace = \substr($literal, 0, $separator);
+
+        return new NamedTypeNode(new Name($word, new NamespaceName($namespace, NamespaceKind::FullyQualified)));
     }
 
     /**

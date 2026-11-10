@@ -8,9 +8,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use TypeLang\Reader\FunctionReaderInterface;
-use TypeLang\Type\IntersectionTypeNode;
-use TypeLang\Type\NullableTypeNode;
-use TypeLang\Type\UnionTypeNode;
+use TypeLang\Type\LogicalTypeNode\IntersectionTypeNode;
+use TypeLang\Type\WrappingTypeNode\NullableTypeNode;
+use TypeLang\Type\LogicalTypeNode\UnionTypeNode;
 
 #[Group('type-lang/reader')]
 class FunctionReaderTest extends ReaderTestCase

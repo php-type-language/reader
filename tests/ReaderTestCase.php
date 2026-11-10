@@ -7,6 +7,8 @@ namespace TypeLang\Reader\Tests;
 use PHPUnit\Framework\Attributes\Group;
 use TypeLang\Reader\ReflectionReader;
 use TypeLang\Type\Name;
+use TypeLang\Type\NamespaceName;
+use TypeLang\Type\NamespaceName\NamespaceKind;
 use TypeLang\Type\NamedTypeNode;
 use TypeLang\Type\TypeNode;
 
@@ -25,7 +27,7 @@ abstract class ReaderTestCase extends TestCase
      */
     protected static function builtin(string $name): NamedTypeNode
     {
-        return new NamedTypeNode(Name::createFromString($name));
+        return new NamedTypeNode(new Name($name));
     }
 
     /**
@@ -35,7 +37,19 @@ abstract class ReaderTestCase extends TestCase
      */
     protected static function classType(string $class): NamedTypeNode
     {
-        return new NamedTypeNode(Name::createFromString($class)->toFullQualified());
+        $separator = \strrpos($class, '\\');
+
+        if ($separator === false) {
+            return new NamedTypeNode(new Name($class, new NamespaceName('', NamespaceKind::FullyQualified)));
+        }
+
+        /** @var non-empty-string $word */
+        $word = \substr($class, $separator + 1);
+
+        /** @var non-empty-string $namespace */
+        $namespace = \substr($class, 0, $separator);
+
+        return new NamedTypeNode(new Name($word, new NamespaceName($namespace, NamespaceKind::FullyQualified)));
     }
 
     /**
