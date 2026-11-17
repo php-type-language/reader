@@ -10,7 +10,8 @@ use TypeLang\Type\TypeNode;
 interface ParameterReaderInterface
 {
     /**
-     * Returns a type AST structure based on an {@see ReflectionParameter} object.
+     * Returns a type AST structure based on an {@see \ReflectionParameter}
+     * object.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */

@@ -10,7 +10,8 @@ use TypeLang\Type\TypeNode;
 interface FunctionReaderInterface
 {
     /**
-     * Returns a type AST structure based on an {@see ReflectionFunctionAbstract} object.
+     * Returns the return type AST structure based on an
+     * {@see \ReflectionFunctionAbstract} object.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */

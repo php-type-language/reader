@@ -10,7 +10,8 @@ use TypeLang\Type\TypeNode;
 interface PropertyReaderInterface
 {
     /**
-     * Returns a type AST structure based on an {@see ReflectionProperty} object.
+     * Returns a type AST structure based on an {@see \ReflectionProperty}
+     * object.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */

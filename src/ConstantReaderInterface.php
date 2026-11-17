@@ -10,7 +10,8 @@ use TypeLang\Type\TypeNode;
 interface ConstantReaderInterface
 {
     /**
-     * Returns a type AST structure based on an {@see ReflectionClassConstant} object.
+     * Returns a type AST structure based on an
+     * {@see \ReflectionClassConstant} object.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */
