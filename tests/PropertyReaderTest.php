@@ -12,6 +12,8 @@ use TypeLang\Reader\PropertyReaderInterface;
 use TypeLang\Reader\Tests\Stub\PropertyReaderStub;
 use TypeLang\Reader\Tests\Stub\PropertyReaderStub82;
 use TypeLang\Reader\Tests\Stub\PropertyReaderStub84;
+use TypeLang\Type\Literal\BoolLiteralNode;
+use TypeLang\Type\Literal\NullLiteralNode;
 use TypeLang\Type\LogicalTypeNode\IntersectionTypeNode;
 use TypeLang\Type\WrappingTypeNode\NullableTypeNode;
 use TypeLang\Type\LogicalTypeNode\UnionTypeNode;
@@ -80,6 +82,49 @@ class PropertyReaderTest extends ReaderTestCase
         );
 
         self::assertSameType(new NullableTypeNode(self::builtin('int')), $type);
+    }
+
+    #[DataProvider('readersDataProvider')]
+    public function testNullInUnionIsLiteral(PropertyReaderInterface $reader): void
+    {
+        $type = $reader->findPropertyType(
+            property: new \ReflectionProperty(PropertyReaderStub::class, 'unionWithNullType'),
+        );
+
+        self::assertSameType(new UnionTypeNode([
+            self::builtin('string'),
+            self::builtin('int'),
+            self::builtin('float'),
+            new NullLiteralNode(),
+        ]), $type);
+    }
+
+    #[DataProvider('readersDataProvider')]
+    public function testFalseInUnionIsLiteral(PropertyReaderInterface $reader): void
+    {
+        $type = $reader->findPropertyType(
+            property: new \ReflectionProperty(PropertyReaderStub::class, 'unionWithFalseType'),
+        );
+
+        self::assertSameType(new UnionTypeNode([
+            self::builtin('int'),
+            new BoolLiteralNode(false),
+        ]), $type);
+    }
+
+    #[DataProvider('readersDataProvider')]
+    #[RequiresPhp('>= 8.2.0')]
+    public function testTrueAndNullTypesAreLiterals(PropertyReaderInterface $reader): void
+    {
+        $union = $reader->findPropertyType(
+            property: new \ReflectionProperty(PropertyReaderStub82::class, 'unionWithTrueType'),
+        );
+        $null = $reader->findPropertyType(
+            property: new \ReflectionProperty(PropertyReaderStub82::class, 'nullType'),
+        );
+
+        self::assertSameType(new UnionTypeNode([self::builtin('int'), new BoolLiteralNode(true)]), $union);
+        self::assertSameType(new NullLiteralNode(), $null);
     }
 
     #[DataProvider('readersDataProvider')]

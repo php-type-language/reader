@@ -14,5 +14,9 @@ final class PropertyReaderStub
 
     public ?int $nullableType;
 
+    public int|float|string|null $unionWithNullType;
+
+    public int|false $unionWithFalseType;
+
     public $untypedType;
 }

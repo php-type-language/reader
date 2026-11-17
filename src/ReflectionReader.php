@@ -11,6 +11,8 @@ use TypeLang\Reader\Exception\UnrecognizedParameterTypeException;
 use TypeLang\Reader\Exception\UnrecognizedPropertyTypeException;
 use TypeLang\Reader\Exception\UnrecognizedReflectionTypeException;
 use TypeLang\Reader\Exception\UnrecognizedTypeException;
+use TypeLang\Type\Literal\BoolLiteralNode;
+use TypeLang\Type\Literal\NullLiteralNode;
 use TypeLang\Type\LogicalTypeNode\IntersectionTypeNode;
 use TypeLang\Type\LogicalTypeNode\UnionTypeNode;
 use TypeLang\Type\Name;
@@ -184,6 +186,15 @@ final class ReflectionReader implements ReaderInterface
         $literal = $type->getName();
 
         $lowercase = \strtolower($literal);
+
+        // the words the parser reads as literals
+        if ($lowercase === 'null') {
+            return new NullLiteralNode($literal);
+        }
+
+        if ($lowercase === 'true' || $lowercase === 'false') {
+            return new BoolLiteralNode($lowercase === 'true', $literal);
+        }
 
         if (
             $type->isBuiltin()
