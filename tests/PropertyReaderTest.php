@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TypeLang\Reader\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use TypeLang\Reader\PropertyAccessDirection;
 use TypeLang\Reader\PropertyReaderInterface;
@@ -18,7 +17,6 @@ use TypeLang\Type\LogicalTypeNode\IntersectionTypeNode;
 use TypeLang\Type\WrappingTypeNode\NullableTypeNode;
 use TypeLang\Type\LogicalTypeNode\UnionTypeNode;
 
-#[Group('type-lang/reader')]
 class PropertyReaderTest extends ReaderTestCase
 {
     #[DataProvider('readersDataProvider')]

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader\Tests;
 
-use PHPUnit\Framework\Attributes\Group;
 use TypeLang\Reader\ReflectionReader;
 use TypeLang\Type\Name;
 use TypeLang\Type\NamespaceName;
@@ -12,7 +11,6 @@ use TypeLang\Type\NamespaceName\NamespaceKind;
 use TypeLang\Type\NamedTypeNode;
 use TypeLang\Type\TypeNode;
 
-#[Group('type-lang/reader')]
 abstract class ReaderTestCase extends TestCase
 {
     protected static function assertSameType(?TypeNode $expected, ?TypeNode $actual, string $message = ''): void

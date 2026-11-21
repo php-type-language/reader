@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TypeLang\Reader\Tests;
 
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use TypeLang\Reader\Exception\UnrecognizedConstantTypeException;
 use TypeLang\Reader\Exception\UnrecognizedReflectionTypeException;
@@ -12,7 +11,6 @@ use TypeLang\Reader\Exception\UnrecognizedTypeException;
 use TypeLang\Reader\ReflectionReader;
 use TypeLang\Reader\Tests\Stub\ConstantReaderStub83;
 
-#[Group('type-lang/reader')]
 class ReflectionReaderTest extends ReaderTestCase
 {
     public function testGetTypeConvertsNamedType(): void
