@@ -11,7 +11,8 @@ interface FunctionReaderInterface
 {
     /**
      * Returns the return type AST structure based on an
-     * {@see \ReflectionFunctionAbstract} object.
+     * {@see \ReflectionFunctionAbstract} object, or {@see null} in case of
+     * the function declares no return type.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */

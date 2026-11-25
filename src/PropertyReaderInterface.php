@@ -11,7 +11,7 @@ interface PropertyReaderInterface
 {
     /**
      * Returns a type AST structure based on an {@see \ReflectionProperty}
-     * object.
+     * object, or {@see null} in case of the property declares no type.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */

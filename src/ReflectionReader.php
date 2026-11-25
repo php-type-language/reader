@@ -54,7 +54,7 @@ final class ReflectionReader implements ReaderInterface
 
     public function findConstantType(\ReflectionClassConstant $constant): ?TypeNode
     {
-        // Constant types are available since PHP 8.3
+        // Constant types exist on PHP 8.3 and later
         if (!\method_exists($constant, 'getType')) {
             return null;
         }
@@ -79,12 +79,12 @@ final class ReflectionReader implements ReaderInterface
 
     private function findPropertyNativeWriteType(\ReflectionProperty $property): ?\ReflectionType
     {
-        // Property hooks are available since PHP 8.4
+        // Property hooks exist on PHP 8.4 and later
         if (!\method_exists($property, 'getHook')) {
             return $this->findPropertyNativeReadType($property);
         }
 
-        /** @var \ReflectionMethod|null $setter */
+        /** @var \ReflectionMethod|null */
         $setter = $property->getHook(\constant('PropertyHookType::Set'));
 
         if ($setter === null) {
@@ -156,8 +156,9 @@ final class ReflectionReader implements ReaderInterface
     /**
      * @api
      *
-     * @throws ReaderExceptionInterface
-     * @throws UnrecognizedTypeException
+     * @throws ReaderExceptionInterface in case of any reading error occurs
+     * @throws UnrecognizedTypeException in case of the type is not a union,
+     *         an intersection or a named one
      */
     public function getType(\ReflectionType $type): TypeNode
     {
@@ -182,7 +183,7 @@ final class ReflectionReader implements ReaderInterface
 
     private function convertNonNullNamedType(\ReflectionNamedType $type): TypeNode
     {
-        /** @var non-empty-string $literal */
+        /** @var non-empty-string */
         $literal = $type->getName();
 
         $lowercase = \strtolower($literal);
@@ -210,7 +211,7 @@ final class ReflectionReader implements ReaderInterface
 
     /**
      * @return UnionTypeNode<TypeNode>
-     * @throws ReaderExceptionInterface
+     * @throws ReaderExceptionInterface in case of any reading error occurs
      */
     private function convertUnionType(\ReflectionUnionType $type): UnionTypeNode
     {
@@ -225,7 +226,7 @@ final class ReflectionReader implements ReaderInterface
 
     /**
      * @return IntersectionTypeNode<TypeNode>
-     * @throws ReaderExceptionInterface
+     * @throws ReaderExceptionInterface in case of any reading error occurs
      */
     private function convertIntersectionType(\ReflectionIntersectionType $type): IntersectionTypeNode
     {

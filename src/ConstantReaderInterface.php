@@ -11,7 +11,8 @@ interface ConstantReaderInterface
 {
     /**
      * Returns a type AST structure based on an
-     * {@see \ReflectionClassConstant} object.
+     * {@see \ReflectionClassConstant} object, or {@see null} in case of the
+     * constant declares no type or PHP does not support constant types.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */

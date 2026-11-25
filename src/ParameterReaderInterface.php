@@ -11,7 +11,7 @@ interface ParameterReaderInterface
 {
     /**
      * Returns a type AST structure based on an {@see \ReflectionParameter}
-     * object.
+     * object, or {@see null} in case of the parameter declares no type.
      *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      */
