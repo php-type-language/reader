@@ -154,8 +154,6 @@ final class ReflectionReader implements ReaderInterface
     }
 
     /**
-     * @api
-     *
      * @throws ReaderExceptionInterface in case of any reading error occurs
      * @throws UnrecognizedTypeException in case of the type is not a union,
      *         an intersection or a named one

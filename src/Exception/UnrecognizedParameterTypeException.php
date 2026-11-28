@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace TypeLang\Reader\Exception;
 
 /**
- * Occurs when the type of function or method parameter cannot be recognized.
+ * Occurs when the type of a parameter of a function or of a method cannot be
+ * recognized.
  */
 final class UnrecognizedParameterTypeException extends UnrecognizedReflectionTypeException
 {
@@ -14,12 +15,17 @@ final class UnrecognizedParameterTypeException extends UnrecognizedReflectionTyp
         \ReflectionParameter $parameter,
         ?\Throwable $previous = null,
     ): self {
-        $message = \sprintf(
-            'Unsupported reflection type defined in $%s parameter: %s',
-            $parameter->getName(),
-            $type::class,
-        );
+        $function = self::formatFunction($parameter->getDeclaringFunction());
 
-        return new self($message, 0, $previous);
+        return new self(
+            type: $type,
+            reflector: $parameter,
+            message: \sprintf(
+                'Reflection type "%s" of parameter "%s" is not supported',
+                \addcslashes($type::class, '"'),
+                \addcslashes($function . '($' . $parameter->name . ')', '"'),
+            ),
+            previous: $previous,
+        );
     }
 }

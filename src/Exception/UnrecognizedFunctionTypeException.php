@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace TypeLang\Reader\Exception;
 
 /**
- * Occurs when the return type of function or method cannot be recognized.
+ * Occurs when the return type of a function or of a method cannot be
+ * recognized.
  */
 final class UnrecognizedFunctionTypeException extends UnrecognizedReflectionTypeException
 {
@@ -14,12 +15,15 @@ final class UnrecognizedFunctionTypeException extends UnrecognizedReflectionType
         \ReflectionFunctionAbstract $function,
         ?\Throwable $previous = null,
     ): self {
-        $message = \sprintf(
-            'Unsupported reflection type defined in %s function: %s',
-            $function->getName(),
-            $type::class,
+        return new self(
+            type: $type,
+            reflector: $function,
+            message: \sprintf(
+                'Reflection type "%s" of function "%s" is not supported',
+                \addcslashes($type::class, '"'),
+                \addcslashes(self::formatFunction($function) . '()', '"'),
+            ),
+            previous: $previous,
         );
-
-        return new self($message, 0, $previous);
     }
 }

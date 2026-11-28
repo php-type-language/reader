@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TypeLang\Reader\Exception;
 
 /**
- * Occurs when the type of property cannot be recognized.
+ * Occurs when the type of a property cannot be recognized.
  */
 final class UnrecognizedPropertyTypeException extends UnrecognizedReflectionTypeException
 {
@@ -14,12 +14,15 @@ final class UnrecognizedPropertyTypeException extends UnrecognizedReflectionType
         \ReflectionProperty $property,
         ?\Throwable $previous = null,
     ): self {
-        $message = \sprintf(
-            'Unsupported reflection type defined in $%s property: %s',
-            $property->getName(),
-            $type::class,
+        return new self(
+            type: $type,
+            reflector: $property,
+            message: \sprintf(
+                'Reflection type "%s" of property "%s" is not supported',
+                \addcslashes($type::class, '"'),
+                \addcslashes($property->class . '::$' . $property->name, '"'),
+            ),
+            previous: $previous,
         );
-
-        return new self($message, 0, $previous);
     }
 }

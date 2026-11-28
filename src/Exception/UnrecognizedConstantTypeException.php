@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TypeLang\Reader\Exception;
 
 /**
- * Occurs when the type of class constant cannot be recognized.
+ * Occurs when the type of a class constant cannot be recognized.
  */
 final class UnrecognizedConstantTypeException extends UnrecognizedReflectionTypeException
 {
@@ -14,12 +14,15 @@ final class UnrecognizedConstantTypeException extends UnrecognizedReflectionType
         \ReflectionClassConstant $constant,
         ?\Throwable $previous = null,
     ): self {
-        $message = \sprintf(
-            'Unsupported reflection type defined in %s const: %s',
-            $constant->getName(),
-            $type::class,
+        return new self(
+            type: $type,
+            reflector: $constant,
+            message: \sprintf(
+                'Reflection type "%s" of constant "%s" is not supported',
+                \addcslashes($type::class, '"'),
+                \addcslashes($constant->class . '::' . $constant->name, '"'),
+            ),
+            previous: $previous,
         );
-
-        return new self($message, 0, $previous);
     }
 }
